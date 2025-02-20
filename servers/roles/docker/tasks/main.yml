@@ -1,0 +1,56 @@
+- name: remove old docker if exists
+  apt:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - docker
+    - docker.io
+    - docker-engine
+
+- name: install dependencies
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - gnupg
+      - lsb-release
+    state: present
+
+- name: add docker gpg key 
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: add docker repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ distribution_codename }} stable"
+    state: present
+
+- name: install docker
+  apt:
+    name: docker-ce
+    state: present
+
+- name: enable docker and start
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+
+- name: add user {{ ansible_user }} to docker group
+  user:
+    name: "{{ ansible_user }}"
+    append: yes
+    groups: docker
+
+- name: ensure that the docker config directory is assigned to root
+  file:
+    path: /root/.docker
+    state: directory
+    mode: '0700'
+
+- name: configure docker to auth in the gcr
+  template:
+    src: docker_config.json.j2
+    dest: /root/.docker/config.json
+    mode: '0600'

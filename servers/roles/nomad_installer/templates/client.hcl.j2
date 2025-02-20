@@ -1,0 +1,22 @@
+data_dir  = "/opt/nomad"
+
+bind_addr = "0.0.0.0"
+
+consul {
+  address = "127.0.0.1:8500"
+}
+
+client {
+  enabled = true
+
+  servers = ["{{ master_address }}:4647"]
+  
+  host_volume "data_storage" {
+    path      = "/mnt/data_storage"
+    read_only = false
+  }
+
+  meta {
+    role = "{{ nomad_meta_role }}"
+  }
+}

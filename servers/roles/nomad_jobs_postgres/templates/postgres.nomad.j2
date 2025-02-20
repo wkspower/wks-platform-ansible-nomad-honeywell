@@ -1,0 +1,63 @@
+job "postgres" {
+  datacenters = ["dc1"]
+  
+  constraint {
+    attribute = "${meta.role}"
+    value     = "{{ constraint }}"
+  }
+
+  group "db" {
+    network {
+      port "db" {
+        to = 5432
+      }
+    }
+
+    task "postgres" {
+      driver = "docker"
+
+      env = {
+        POSTGRES_USER     = "{{ postgres_user }}"
+        POSTGRES_PASSWORD = "{{ postgres_password }}"
+        POSTGRES_DB       = "{{ postgres_database }}"
+      }
+            
+      config {
+        image = "postgres:15"
+        command = "sh"
+        args = [
+          "-c",
+          "rm -rf /var/lib/postgresql/data/* && docker-entrypoint.sh postgres"
+        ]        
+        ports = ["db"]
+      }
+
+      resources {
+        cpu    = 1000
+        memory = 1000
+      }
+
+      service {
+        name = "postgres"
+        port = "db"
+        check {
+          name     = "tcp"
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+
+      volume_mount {
+        volume      = "postgres_data"
+        destination = "/var/lib/postgresql/data"
+      }
+    }
+
+    volume "postgres_data" {
+      type      = "host"
+      read_only = false
+      source    = "data_storage"
+    }
+  }
+}

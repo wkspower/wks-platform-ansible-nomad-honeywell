@@ -1,0 +1,10 @@
+
+---
+- hosts: apps
+  become: yes
+  roles:
+    - role: nomad_jobs_postgres
+      constraint: "app2"
+      postgres_user: "admin"
+      postgres_password: "S3gur0!"
+      postgres_database: "wkspower"

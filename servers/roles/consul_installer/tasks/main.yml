@@ -1,0 +1,49 @@
+- name: add HashiCorp gpg key
+  apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+
+- name: add HashiCorp repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ distribution_codename }} main"
+    state: present
+
+- name: install consul
+  apt:
+    name: consul
+    state: present
+
+- name: create config dir to consul
+  file:
+    path: /etc/consul.d
+    state: directory
+    mode: '0755'
+
+- name: copy consul config file
+  template:
+    src: "{{ consul_node_role }}.hcl.j2"
+    dest: /etc/consul.d/consul.hcl
+    mode: '0644'
+
+- name: create systemd service to consul
+  copy:
+    dest: /etc/systemd/system/consul.service
+    content: |
+      [Unit]
+      Description=Consul
+      After=network.target
+
+      [Service]
+      ExecStart=/usr/bin/consul agent -config-dir=/etc/consul.d
+      KillMode=process
+      Restart=on-failure
+      LimitNOFILE=65536
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: enabled and start consul
+  systemd:
+    name: consul
+    state: restarted
+    enabled: yes

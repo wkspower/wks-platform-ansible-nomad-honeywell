@@ -1,0 +1,48 @@
+job "keycloak" {
+  datacenters = ["dc1"]
+
+  constraint {
+    attribute = "${meta.role}"
+    value     = "{{ constraint }}"
+  }
+
+  group "keycloak" {
+    network {
+      port "http" {
+        to = 8080
+      }
+    }
+
+    task "keycloak" {
+      driver = "docker"
+
+      config {
+        image = "quay.io/keycloak/keycloak:20.0.3"
+        ports = ["http"]
+        args  = ["start-dev"]
+      }
+
+      env {
+        KEYCLOAK_ADMIN          = "{{ keycloak_user }}"
+        KEYCLOAK_ADMIN_PASSWORD = "{{ keycloak_password }}"
+      }
+
+      resources {
+        cpu    = 500
+        memory = 1024
+      }
+
+      service {
+        name = "keycloak"
+        port = "http"
+        check {
+          name     = "http-check"
+          type     = "http"
+          path     = "/"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+    }
+  }
+}

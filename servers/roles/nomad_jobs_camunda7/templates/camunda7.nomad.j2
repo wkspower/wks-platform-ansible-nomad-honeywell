@@ -1,0 +1,46 @@
+job "camunda7" {
+  datacenters = ["dc1"]
+
+  constraint {
+    attribute = "${meta.role}"
+    value     = "{{ constraint }}"
+  }
+
+  group "camunda" {
+    network {
+      port "http" {
+        to = 8080
+      }
+    }
+
+    task "camunda7" {
+      driver = "docker"
+
+      config {
+        image = "camunda/camunda-bpm-platform:run-7.20.0"
+        args = [
+          "./camunda.sh",
+          "--rest",
+          "--webapps"
+        ]
+        ports = ["http"]
+      }
+
+      resources {
+        cpu    = 500
+        memory = 1024
+      }
+
+      service {
+        name = "camunda7"
+        port = "http"
+        check {
+          type     = "http"
+          path     = "/"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+.DS_Store
+secret.y*
+secrets.y*
+kubeconfig
+users.txt
+.terraform
+age.txt
+terraform.tfstate
+terraform.tfstate.backup
+secret-default.yaml
+secret-notify.yaml

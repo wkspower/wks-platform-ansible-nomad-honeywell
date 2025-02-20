@@ -1,0 +1,9 @@
+
+---
+- hosts: apps
+  become: yes
+  roles:
+    - role: nomad_jobs_minio
+      constraint: "app1"
+      minio_user: "minio"
+      minio_password: "BwiY|61P1z3("

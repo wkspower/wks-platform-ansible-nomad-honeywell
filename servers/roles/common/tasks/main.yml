@@ -1,0 +1,15 @@
+- name: update packages and cache
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: install core packages 
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - curl
+    - wget
+    - unzip
+    - git
+    - jq

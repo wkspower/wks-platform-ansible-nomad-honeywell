@@ -1,0 +1,16 @@
+---
+- name: copy keycloak spec job to host
+  template:
+    src: keycloak.nomad.j2
+    dest: /tmp/keycloak.nomad
+    mode: "0644"
+
+- name: deploy keycloak in nomad
+  shell: |
+    nomad run /tmp/keycloak.nomad
+  register: nomad_run_output
+  changed_when: "'evaluation triggered' in nomad_run_output.stdout"
+
+- name: output deploy after run
+  debug:
+    var: nomad_run_output.stdout

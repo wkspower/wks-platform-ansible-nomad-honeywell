@@ -1,0 +1,9 @@
+
+---
+- hosts: apps
+  become: yes
+  roles:
+    - role: nomad_jobs_mongo
+      constraint: "app2"
+      mongo_user: "mongodb"
+      mongo_password: "Cwiz$61P1z3@"

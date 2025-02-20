@@ -1,0 +1,7 @@
+
+---
+- hosts: apps
+  become: yes
+  roles:
+    - role: nomad_jobs_camunda7
+      constraint: "app1"

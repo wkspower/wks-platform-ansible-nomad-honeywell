@@ -1,0 +1,16 @@
+---
+- name: copy mongo spec job to host
+  template:
+    src: mongo.nomad.j2
+    dest: /tmp/mongo.nomad
+    mode: "0644"
+
+- name: deploy mongo in nomad
+  shell: |
+    nomad run /tmp/mongo.nomad
+  register: nomad_run_output
+  changed_when: "'evaluation triggered' in nomad_run_output.stdout"
+
+- name: output deploy after run
+  debug:
+    var: nomad_run_output.stdout

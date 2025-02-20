@@ -1,0 +1,9 @@
+
+---
+- hosts: apps
+  become: yes
+  roles:
+    - role: nomad_jobs_keycloak
+      constraint: "app1"
+      keycloak_user: "admin"
+      keycloak_password: "K9zur0#"

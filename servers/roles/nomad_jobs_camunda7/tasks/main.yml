@@ -1,0 +1,16 @@
+---
+- name: copy camunda7 spec job to host
+  template:
+    src: camunda7.nomad.j2
+    dest: /tmp/camunda7.nomad
+    mode: "0644"
+
+- name: deploy camunda7 in nomad
+  shell: |
+    nomad run /tmp/camunda7.nomad
+  register: nomad_run_output
+  changed_when: "'evaluation triggered' in nomad_run_output.stdout"
+
+- name: output deploy after run
+  debug:
+    var: nomad_run_output.stdout

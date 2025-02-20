@@ -1,0 +1,49 @@
+- name: add HashiCorp gpg key
+  apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+
+- name: add HashiCorp repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ distribution_codename }} main"
+    state: present
+
+- name: install nomad
+  apt:
+    name: nomad
+    state: present
+
+- name: create config dir to nomad
+  file:
+    path: /etc/nomad.d
+    state: directory
+    mode: '0755'
+
+- name: copy nomad config file
+  template:
+    src: "{{ nomad_node_role }}.hcl.j2"
+    dest: /etc/nomad.d/nomad.hcl
+    mode: '0644'
+
+- name: create systemd service to nomad
+  copy:
+    dest: /etc/systemd/system/nomad.service
+    content: |
+      [Unit]
+      Description=Nomad
+      After=network.target
+
+      [Service]
+      ExecStart=/usr/bin/nomad agent -config=/etc/nomad.d
+      KillMode=process
+      Restart=on-failure
+      LimitNOFILE=65536
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: enabled and start nomad
+  systemd:
+    name: nomad
+    state: restarted
+    enabled: yes

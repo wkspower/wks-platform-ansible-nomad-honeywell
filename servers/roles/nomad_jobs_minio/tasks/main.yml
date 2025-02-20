@@ -1,0 +1,16 @@
+---
+- name: copy minio spec job to host
+  template:
+    src: minio.nomad.j2
+    dest: /tmp/minio.nomad
+    mode: "0644"
+
+- name: deploy minio in nomad
+  shell: |
+    nomad run /tmp/minio.nomad
+  register: nomad_run_output
+  changed_when: "'evaluation triggered' in nomad_run_output.stdout"
+
+- name: output deploy after run
+  debug:
+    var: nomad_run_output.stdout
