@@ -1,5 +1,11 @@
 # wks-infra-bare
 
+## Create ssh keys 
+
+```bash
+ssh-keygen -t rsa -b 4096 -C "deployer" -f ~/.ssh/id_rsa_deployer
+```
+
 ## Create hosts
 
 ```bash
@@ -26,4 +32,10 @@ ansible-playbook -i inventory/hosts playbooks/deploy_postgres.yml
 
 ```bash
 ansible-playbook -i inventory/hosts playbooks/deploy_storage_api.yml
+```
+
+## Access to cluster dashboard 
+
+```bash
+ssh -i ~/.ssh/id_rsa_deployer -L 4646:104.248.57.30:4646  deployer@104.248.57.30
 ```
