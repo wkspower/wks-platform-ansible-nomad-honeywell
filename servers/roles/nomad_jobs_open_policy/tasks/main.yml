@@ -1,0 +1,22 @@
+---
+- name: copy wks policy rules to job to host
+  copy:
+    src: files/wks_policy_rules.rego
+    dest: /mnt/data_storage/wks_policy_rules.rego
+    mode: "0644"
+
+- name: copy opa spec job to host
+  template:
+    src: opa.nomad.j2
+    dest: /tmp/opa.nomad
+    mode: "0644"
+
+- name: deploy opa in nomad
+  shell: |
+    nomad run /tmp/opa.nomad
+  register: nomad_run_output
+  changed_when: "'evaluation triggered' in nomad_run_output.stdout"
+
+- name: output deploy after run
+  debug:
+    var: nomad_run_output.stdout
