@@ -9,7 +9,7 @@ job "mongo" {
   group "mongo" {
     network {
       port "db" {
-        to = 27017
+        static = 27017
       }
     }
 
