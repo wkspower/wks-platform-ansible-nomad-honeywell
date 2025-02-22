@@ -39,3 +39,9 @@ ansible-playbook -i inventory/hosts playbooks/deploy_storage_api.yml
 ```bash
 ssh -i ~/.ssh/id_rsa_deployer -L 4646:104.248.57.30:4646  deployer@104.248.57.30
 ```
+
+## How to validate open policy pules before commit
+
+```bash
+docker run --rm -ti -v $PWD/roles/nomad_jobs_open_policy/files:/etc/rules openpolicyagent/opa:edge-static eval -i /etc/rules/wks_policy_rules.rego 'data.wks.authz.allow'
+```
