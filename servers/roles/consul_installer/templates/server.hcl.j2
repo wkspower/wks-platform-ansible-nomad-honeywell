@@ -5,3 +5,11 @@ advertise_addr = "{{ ansible_host }}"
 server = true
 bootstrap_expect = 1
 ui = true
+
+dns_config {
+  enable_truncate = true
+  only_passing = true
+  service_ttl = {
+    "*" = "10s"
+  }
+}

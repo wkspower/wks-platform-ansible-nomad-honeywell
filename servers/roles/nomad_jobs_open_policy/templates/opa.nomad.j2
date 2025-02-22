@@ -9,7 +9,7 @@ job "opa" {
   group "opa" {
     network {
       port "opa" {
-        to = 8181
+        static = 8181
       }
     }
 
@@ -34,6 +34,7 @@ job "opa" {
 
       service {
         name = "opa"
+        provider = "consul"
         port = "opa"
         check {
           type     = "tcp"

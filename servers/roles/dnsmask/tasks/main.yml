@@ -1,0 +1,70 @@
+---
+# - name: install dnsmasq
+#   apt:
+#     name: dnsmasq
+#     state: present
+#     update_cache: yes
+
+- name: stop and disable systemd-resolved (if running)
+  systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: false
+  ignore_errors: yes
+
+- name: remove existing /etc/resolv.conf if present
+  file:
+    path: /etc/resolv.conf
+    state: absent
+
+- name: create new /etc/resolv.conf with dnsmasq as resolver
+  copy:
+    dest: /etc/resolv.conf
+    content: |
+      nameserver 127.0.0.1
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: create dnsmasq configuration file for consul dns
+  copy:
+    dest: /etc/dnsmasq.d/consul.conf
+    content: |
+      server=/consul/127.0.0.1#8600
+      server=8.8.8.8
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: create custom resolv.conf file for docker containers
+  copy:
+    dest: /etc/custom_resolv.conf
+    content: |
+      nameserver 127.0.0.1
+      search service.consul
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: configure docker daemon with custom dns settings
+  copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+        "dns": ["{{ ansible_default_ipv4.address }}", "8.8.8.8", "127.0.0.1"],
+        "dns-search": ["service.consul"]
+      }
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: restart docker
+  systemd:
+    name: docker
+    state: restarted    
+
+- name: restart dnsmasq service to apply changes
+  systemd:
+    name: dnsmasq
+    state: restarted
+    enabled: true

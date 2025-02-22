@@ -2,37 +2,35 @@
   become: yes
   gather_facts: yes
   roles:
-    - role: common
-    - role: docker
+    # - role: common
+    # - role: docker
+    - role: dnsmask
 
-- hosts: master
-  become: yes
-  gather_facts: yes
-  roles:
-    - role: nomad_installer
-      nomad_node_role: "server"
+# - hosts: master
+#   become: yes
+#   gather_facts: yes
+#   roles:
+#     - role: consul_installer
+#       consul_node_role: "server"
+#     - role: nomad_installer
+#       nomad_node_role: "server"
 
-    - role: consul_installer
-      consul_node_role: "server"
+# - hosts: app1
+#   gather_facts: yes
+#   become: yes
+#   roles:
+#     - role: consul_installer
+#       consul_node_role: "client"
+#     - role: nomad_installer
+#       nomad_meta_role: "app1"
+#       nomad_node_role: "client"
 
-- hosts: app1
-  gather_facts: yes
-  become: yes
-  roles:
-    - role: nomad_installer
-      nomad_meta_role: "app1"
-      nomad_node_role: "client"
-
-    - role: consul_installer
-      consul_node_role: "client"
-
-- hosts: app2
-  gather_facts: yes
-  become: yes
-  roles:
-    - role: nomad_installer
-      nomad_meta_role: "app2"
-      nomad_node_role: "client"
-      
-    - role: consul_installer
-      consul_node_role: "client"
+# - hosts: app2
+#   gather_facts: yes
+#   become: yes
+#   roles:
+#     - role: consul_installer
+#       consul_node_role: "client"
+#     - role: nomad_installer
+#       nomad_meta_role: "app2"
+#       nomad_node_role: "client"
