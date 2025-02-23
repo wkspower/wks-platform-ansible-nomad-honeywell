@@ -41,8 +41,6 @@ job "traefik" {
           "--api.dashboard=true",
           "--entrypoints.web.address=:80",
           "--entrypoints.websecure.address=:443",
-          "--providers.docker=true",
-          "--experimental.hub=true",
           "--serversTransport.insecureSkipVerify=true",
           "--providers.consulcatalog.prefix=traefik",
           "--providers.consulcatalog.exposedbydefault=false",
