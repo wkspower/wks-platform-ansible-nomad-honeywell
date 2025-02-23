@@ -1,0 +1,50 @@
+job "case_engine_api" {
+  datacenters = ["dc1"]
+
+  group "apps" {
+    network {
+      port "http" {
+        static = 8081
+      }
+    }
+
+    task "case_engine_api" {
+      driver = "docker"
+
+      config {
+        image = "ghcr.io/wkspower/case-engine-rest-api:{{ tag }}"
+        ports = ["http"]
+      }
+
+      resources {
+        cpu    = 500
+        memory = 512
+      }
+
+      env {
+        CAMUNDA_VERSION="camunda7"
+        CAMUNDA_BASE_URL="http://camunda7.service.consul:8080/engine-rest"
+        MONGO_CONN="mongodb://mongodb.service.consul"
+        MONGO_DATABASE="wks"
+        KEYCLOAK_URL="http://keycloak.service.consul:8080"
+        OPA_URL="http://opa.service.consul:8181/v1/data/wks/authz/allow"
+      }      
+
+      service {
+        name = "caseengineapi"
+        provider = "consul"
+        port = "http"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.middlewares.delpath.stripPrefix.prefixes=/engine,/inbound,/s3",
+          "traefik.http.routers.caseengineapi.rule=PathPrefix(`/engine`)",
+          "traefik.http.routers.caseengineapi.entrypoints=web",
+          "traefik.http.routers.caseengineapi.rule=PathPrefix(`/engine`) || PathPrefix(`/inbound`) || PathPrefix(`/s3`)",
+          "traefik.http.routers.caseengineapi.entrypoints=web",
+          "traefik.http.routers.caseengineapi.middlewares=delpath"          
+        ]
+      }
+    }
+  }
+}
