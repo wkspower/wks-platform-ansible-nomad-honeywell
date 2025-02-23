@@ -1,0 +1,16 @@
+---
+- name: copy case_portal spec job to host
+  template:
+    src: case_portal.nomad.j2
+    dest: /tmp/case_portal.nomad
+    mode: "0644"
+
+- name: deploy case_portal in nomad
+  shell: |
+    nomad run /tmp/case_portal.nomad
+  register: nomad_run_output
+  changed_when: "'evaluation triggered' in nomad_run_output.stdout"
+
+- name: output deploy after run
+  debug:
+    var: nomad_run_output.stdout
