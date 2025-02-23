@@ -1,0 +1,16 @@
+---
+- name: copy traefik spec job to host
+  template:
+    src: traefik.nomad.hcl
+    dest: /tmp/traefik.nomad
+    mode: "0644"
+
+- name: deploy traefik in nomad
+  shell: |
+    nomad run /tmp/traefik.nomad
+  register: nomad_run_output
+  changed_when: "'evaluation triggered' in nomad_run_output.stdout"
+
+- name: output deploy after run
+  debug:
+    var: nomad_run_output.stdout

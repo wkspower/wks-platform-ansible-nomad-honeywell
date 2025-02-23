@@ -1,0 +1,6 @@
+
+---
+- hosts: apps
+  become: yes
+  roles:
+    - role: nomad_jobs_traefik
