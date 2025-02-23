@@ -1,0 +1,16 @@
+---
+- name: copy c7_external_tasks spec job to host
+  template:
+    src: c7_external_tasks.nomad.j2
+    dest: /tmp/c7_external_tasks.nomad
+    mode: "0644"
+
+- name: deploy c7_external_tasks in nomad
+  shell: |
+    nomad run /tmp/c7_external_tasks.nomad
+  register: nomad_run_output
+  changed_when: "'evaluation triggered' in nomad_run_output.stdout"
+
+- name: output deploy after run
+  debug:
+    var: nomad_run_output.stdout

@@ -1,0 +1,43 @@
+job "c7_external_tasks" {
+  datacenters = ["dc1"]
+
+  group "apps" {
+    network {
+      port "http" {
+        static = 8081
+      }
+    }
+
+    task "c7_external_tasks" {
+      driver = "docker"
+
+      config {
+        image = "ghcr.io/wkspower/case-engine-rest-api:{{ tag }}"
+        ports = ["http"]
+      }
+
+      resources {
+        cpu    = 500
+        memory = 512
+      }
+
+      env {
+        CAMUNDA_BASE_URL="http://camunda7.service.consul:8080/engine-rest"
+        CAMUNDA_USERNAME="demo"
+        CAMUNDA_PASSWORD="demo"
+        KEYCLOAK_URL="http://opa.service.consul.keycloak:8080"
+        WKS_CASE_API_URL="http://case_engine_api.service.consul:8081"
+        WEBSOCKET_ENABLED="false"
+        DISABLE_BACKOFF_STRATEGY="false"
+        MONGO_CONN="mongodb://mongodb.service.consul"
+        MONGO_DATABASE="wks"
+      }      
+
+      service {
+        name = "c7externaltasks"
+        provider = "consul"
+        port = "http"
+      }
+    }
+  }
+}

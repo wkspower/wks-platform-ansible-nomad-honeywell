@@ -1,0 +1,7 @@
+
+---
+- hosts: master
+  become: yes
+  roles:
+    - role: nomad_jobs_c7_external_tasks
+      tag: v1.4.12
