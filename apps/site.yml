@@ -1,0 +1,8 @@
+- hosts: all
+  become: yes
+  gather_facts: yes
+  roles:
+    - role: nomad_jobs_c7_external_tasks
+    - role: nomad_jobs_case_engine_api
+    - role: nomad_jobs_storage_api
+    - role: nomad_jobs_case_portal
