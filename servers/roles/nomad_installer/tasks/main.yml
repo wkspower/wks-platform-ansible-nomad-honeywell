@@ -25,6 +25,12 @@
     dest: /etc/nomad.d/nomad.hcl
     mode: '0644'
 
+- name: add user nomad to docker group
+  user:
+    name: nomad
+    append: yes
+    groups: docker
+
 - name: create systemd service to nomad
   copy:
     dest: /etc/systemd/system/nomad.service

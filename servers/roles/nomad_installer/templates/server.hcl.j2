@@ -11,3 +11,11 @@ advertise {
   rpc  = "{{ master_address }}"
   serf = "{{ master_address }}"
 }
+
+plugin "docker" {
+  config {
+    volumes {
+      enabled = true
+    }
+  }
+}

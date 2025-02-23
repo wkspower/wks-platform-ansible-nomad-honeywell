@@ -20,3 +20,11 @@ client {
     role = "{{ nomad_meta_role }}"
   }
 }
+
+plugin "docker" {
+  config {
+    volumes {
+      enabled = true
+    }
+  }
+}
