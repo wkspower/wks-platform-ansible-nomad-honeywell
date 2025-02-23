@@ -4,7 +4,7 @@ job "storage_api" {
   group "apps" {
     network {
       port "http" {
-        to = 8085
+        static = 8085
       }
     }
 
@@ -23,8 +23,8 @@ job "storage_api" {
 
       env {
         OPA_URL="http://opa.service.consul:8181/v1/data/wks/authz/allow"
-        KEYCLOAK_URL="http://opa.service.consul.keycloak:8080"
-        MINIO_HOST_INTERNAL="opa.service.consul.minio"
+        KEYCLOAK_URL="http://keycloak.service.consul:8080"
+        MINIO_HOST_INTERNAL="minio.service.consul"
         MINIO_ROOT_USER="minio"
         MINIO_ROOT_PASSWORD="BwiY|61P1z3("
       }      
@@ -33,6 +33,12 @@ job "storage_api" {
         name = "storageapi"
         provider = "consul"
         port = "http"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.storageapi.rule=Path(`/storage`)",
+          "traefik.http.routers.storageapi.entrypoints=web"
+        ]
       }
     }
   }

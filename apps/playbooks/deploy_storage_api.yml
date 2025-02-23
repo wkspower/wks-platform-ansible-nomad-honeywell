@@ -4,4 +4,4 @@
   become: yes
   roles:
     - role: nomad_jobs_storage_api
-      tag: v1.4.10-patch1
+      tag: v1.4.12
