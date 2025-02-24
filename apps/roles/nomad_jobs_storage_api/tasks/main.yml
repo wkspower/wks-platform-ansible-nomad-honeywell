@@ -1,7 +1,7 @@
 ---
 - name: copy storage_api spec job to host
   template:
-    src: storage_api.nomad.j2
+    src: storage_api.nomad.hcl
     dest: /tmp/storage_api.nomad
     mode: "0644"
 

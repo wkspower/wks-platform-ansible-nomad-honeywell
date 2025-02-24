@@ -12,7 +12,7 @@ job "case_portal" {
       driver = "docker"
 
       config {
-        image = "ghcr.io/wkspower/case-portal:{{ tag }}"
+        image = "{{ docker_registry_dest }}/case-portal:{{ tag }}"
         ports = ["http"]
       }
 

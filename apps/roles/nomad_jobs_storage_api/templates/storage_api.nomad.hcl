@@ -12,7 +12,7 @@ job "storage_api" {
       driver = "docker"
 
       config {
-        image = "ghcr.io/wkspower/storage-api:{{ tag }}"
+        image = "{{ docker_registry_dest }}/storage-api:{{ tag }}"
         ports = ["http"]
       }
 

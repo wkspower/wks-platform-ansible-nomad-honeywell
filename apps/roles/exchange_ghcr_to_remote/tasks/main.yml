@@ -1,0 +1,7 @@
+- name: pull and save docker image on localhost
+  import_tasks: pull_image.yml
+  delegate_to: localhost
+  run_once: true
+
+- name: transfer and load image on remote hosts
+  import_tasks: transfer_image.yml

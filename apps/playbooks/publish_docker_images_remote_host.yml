@@ -1,0 +1,18 @@
+---
+- hosts: all
+  roles:
+    - role: exchange_ghcr_to_remote
+      vars:
+        image: "c7-external-tasks"
+
+    - role: exchange_ghcr_to_remote
+      vars:
+        image: "case-engine-rest-api"
+
+    - role: exchange_ghcr_to_remote
+      vars:
+        image: "case-portal"
+
+    - role: exchange_ghcr_to_remote
+      vars:
+        image: "storage-api"

@@ -4,4 +4,3 @@
   become: yes
   roles:
     - role: nomad_jobs_case_engine_api
-      tag: v1.4.12

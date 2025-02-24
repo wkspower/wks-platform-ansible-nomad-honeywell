@@ -12,7 +12,7 @@ job "c7_external_tasks" {
       driver = "docker"
 
       config {
-        image = "ghcr.io/wkspower/case-engine-rest-api:{{ tag }}"
+        image = "{{ docker_registry_dest }}/c7-external-tasks:{{ tag }}"
         ports = ["http"]
       }
 

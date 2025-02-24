@@ -1,0 +1,10 @@
+- name: pull the docker image from GitHub Container Registry
+  ansible.builtin.command:
+    cmd: docker pull --platform linux/amd64 {{ docker_registry_src }}/{{ image }}:{{ tag }}
+  register: docker_pull
+  changed_when: "'downloaded newer image' in docker_pull.stdout"
+
+- name: save the docker image as a tar file
+  ansible.builtin.command:
+    cmd: docker save -o /tmp/{{ image }}_{{ tag }} {{ docker_registry_src }}/{{ image }}:{{ tag }}
+  changed_when: true
