@@ -45,3 +45,25 @@ ssh -i ~/.ssh/id_rsa_deployer -L 4646:104.248.57.30:4646  deployer@104.248.57.30
 ```bash
 docker run --rm -ti -v $PWD/roles/nomad_jobs_open_policy/files:/etc/rules openpolicyagent/opa:edge-static eval -i /etc/rules/wks_policy_rules.rego 'data.wks.authz.allow'
 ```
+
+## Exposing service ports from cluster
+
+```bash
+# only
+ssh -i ~/.ssh/id_rsa_deployer -L 7000:postgres.service.consul:5432  deployer@104.248.57.30
+ssh -i ~/.ssh/id_rsa_deployer -L 7001:camunda7.service.consul:8080  deployer@104.248.57.30
+ssh -i ~/.ssh/id_rsa_deployer -L 7002:keycloak.service.consul:8080  deployer@104.248.57.30
+ssh -i ~/.ssh/id_rsa_deployer -L 7003:mongodb.service.consul:27017  deployer@104.248.57.30
+ssh -i ~/.ssh/id_rsa_deployer -L 7004:minio.service.consul:9000  deployer@104.248.57.30
+```
+
+```bash
+# all
+ssh -i ~/.ssh/id_rsa_deployer \
+    -L 7000:postgres.service.consul:5432 \
+    -L 7001:camunda7.service.consul:8080 \
+    -L 7002:keycloak.service.consul:8080 \
+    -L 7003:mongodb.service.consul:27017 \
+    -L 7004:minio.service.consul:9000 \
+    deployer@104.248.57.30
+```
