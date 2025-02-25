@@ -1,7 +1,7 @@
 ---
 - name: copy keycloak spec job to host
   template:
-    src: keycloak.nomad.j2
+    src: keycloak.nomad.hcl
     dest: /tmp/keycloak.nomad
     mode: "0644"
 

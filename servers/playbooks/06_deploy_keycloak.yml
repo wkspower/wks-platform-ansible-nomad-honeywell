@@ -1,0 +1,11 @@
+
+---
+- hosts: apps
+  become: yes
+  roles:
+    - role: nomad_jobs_keycloak
+      constraint: "app1"
+      keycloak_user: "admin"
+      keycloak_password: "admin"
+      tls_key_dest: "/mnt/data_storage/tls.key"
+      tls_crt_dest: "/mnt/data_storage/tls.crt"

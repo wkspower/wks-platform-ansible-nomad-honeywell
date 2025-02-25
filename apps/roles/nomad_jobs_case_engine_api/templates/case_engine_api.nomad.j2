@@ -38,8 +38,6 @@ job "case_engine_api" {
         tags = [
           "traefik.enable=true",
           "traefik.http.middlewares.delpath.stripPrefix.prefixes=/engine,/inbound,/s3",
-          "traefik.http.routers.caseengineapi.rule=PathPrefix(`/engine`)",
-          "traefik.http.routers.caseengineapi.entrypoints=web",
           "traefik.http.routers.caseengineapi.rule=PathPrefix(`/engine`) || PathPrefix(`/inbound`) || PathPrefix(`/s3`)",
           "traefik.http.routers.caseengineapi.entrypoints=web",
           "traefik.http.routers.caseengineapi.middlewares=delpath"          
