@@ -9,3 +9,5 @@ terraform.tfstate
 terraform.tfstate.backup
 secret-default.yaml
 secret-notify.yaml
+*.crt
+*.key

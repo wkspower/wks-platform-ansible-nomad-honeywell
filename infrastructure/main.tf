@@ -3,6 +3,18 @@ resource "digitalocean_ssh_key" "deployer" {
   public_key = var.ssh_key
 }
 
+module "lb" {
+  source     = "./modules/droplets"
+  name       = "vmbare-lb"
+  vmsize     = "s-1vcpu-1gb"
+  volumesize = 20
+  region     = var.region
+  ssh_key    = var.ssh_key
+  do_token   = var.do_token
+  sshkey     = digitalocean_ssh_key.deployer.fingerprint
+  tags       = ["bare", "lb"]
+}
+
 module "master" {
   source     = "./modules/droplets"
   name       = "vmbare-master"
