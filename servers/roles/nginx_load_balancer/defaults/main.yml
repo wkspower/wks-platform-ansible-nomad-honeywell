@@ -1,0 +1,13 @@
+# general nginx configuration
+nginx_worker_processes: auto
+nginx_worker_connections: 1024
+
+# site configuration
+server_name: "*.wkspower.dev"
+site_name: "wkspower"
+root_directory: "/var/www/html"
+cert_file_name: "wkspower_dev"
+
+# directory for TLS certificates
+tls_cert_dir: "/etc/nginx/ssl"
+tls_key: "/etc/nginx/ssl/wkspower_dev.key"

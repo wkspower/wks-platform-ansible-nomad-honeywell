@@ -1,0 +1,9 @@
+- name: cp cert file to remote host
+  copy:
+    src: wkspower_dev.crt
+    dest: "{{ tls_crt_dest }}"
+
+- name: cp private key file to remote host
+  copy:
+    src: wkspower_dev.key
+    dest: "{{ tls_key_dest }}"

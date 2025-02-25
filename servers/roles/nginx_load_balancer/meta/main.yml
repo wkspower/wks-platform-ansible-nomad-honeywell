@@ -1,0 +1,4 @@
+
+---
+dependencies:
+  - role: shared_cert_files
