@@ -1,7 +1,7 @@
 ---
 - name: copy postgres spec job to host
   template:
-    src: postgres.nomad.j2
+    src: postgres.nomad.hcl
     dest: /tmp/postgres.nomad
     mode: "0644"
 

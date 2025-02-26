@@ -1,7 +1,7 @@
 ---
 - name: copy minio spec job to host
   template:
-    src: minio.nomad.j2
+    src: minio.nomad.hcl
     dest: /tmp/minio.nomad
     mode: "0644"
 

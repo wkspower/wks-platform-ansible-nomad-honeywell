@@ -15,7 +15,7 @@ ssh-keygen -t rsa -b 4096 -C "deployer" -f ~/.ssh/id_rsa_deployer
  ## Setup servers and cluster
 
 ```bash
- ansible-playbook -i inventory site.yml -e "ghcr_username=${GHCR_USER} ghcr_token=${GHCR_TOKEN}"
+ ansible-playbook -i inventory site.yml
 ```
 
 ## Deploy server to cluster
@@ -38,6 +38,7 @@ ansible-playbook -i inventory/hosts playbooks/deploy_storage_api.yml
 
 ```bash
 ssh -i ~/.ssh/id_rsa_deployer -L 4646:104.248.57.30:4646  deployer@104.248.57.30
+ssh -i ~/.ssh/id_rsa_deployer deployer@159.223.173.235
 ```
 
 ## How to validate open policy pules before commit
@@ -55,15 +56,19 @@ ssh -i ~/.ssh/id_rsa_deployer -L 7001:camunda7.service.consul:8080  deployer@104
 ssh -i ~/.ssh/id_rsa_deployer -L 7002:keycloak.service.consul:8080  deployer@104.248.57.30
 ssh -i ~/.ssh/id_rsa_deployer -L 7003:mongodb.service.consul:27017  deployer@104.248.57.30
 ssh -i ~/.ssh/id_rsa_deployer -L 7004:minio.service.consul:9000  deployer@104.248.57.30
+ssh -i ~/.ssh/id_rsa_deployer -L 7005:traefik.service.consul:8080  deployer@104.248.57.30
 ```
 
 ```bash
 # all
-ssh -i ~/.ssh/id_rsa_deployer \
-    -L 7000:postgres.service.consul:5432 \
-    -L 7001:camunda7.service.consul:8080 \
-    -L 7002:keycloak.service.consul:8080 \
-    -L 7003:mongodb.service.consul:27017 \
-    -L 7004:minio.service.consul:9000 \
-    deployer@104.248.57.30
+ssh -i ~/.ssh/id_rsa_deployer -L 4646:104.248.57.30:4646 -L 7005:traefik.service.consul:8080 deployer@104.248.57.30
+```
+
+## Configure configue 'org' namespace assigned to subdomain
+
+### Example
+
+```bash
+[demo-mb].wkspower.dev
+     => org
 ```

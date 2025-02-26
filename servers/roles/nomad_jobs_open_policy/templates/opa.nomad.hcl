@@ -1,4 +1,4 @@
-job "mongo" {
+job "opa" {
   datacenters = ["dc1"]
 
   constraint {
@@ -6,36 +6,40 @@ job "mongo" {
     value     = "{{ constraint }}"
   }
 
-  group "mongo" {
+  group "opa" {
     network {
-      port "db" {
-        static = 27017
+      mode = "bridge"
+      
+      port "opa" {
+        static = 8181
+        to     = 8181
       }
     }
 
-    task "mongodb" {
+    task "opa-server" {
       driver = "docker"
 
       config {
-        image = "mongo:6.0"
-        ports = ["db"]
+        image = "openpolicyagent/opa:0.49.2-static"
+        args  = ["run", "--server", "/etc/rules/wks_policy_rules.rego"]
+        ports = ["opa"]
       }
 
       resources {
         cpu    = 500
-        memory = 512
+        memory = 256
       }
 
       volume_mount {
-        volume      = "mongo_data"
-        destination = "/var/lib/mongo/data"
+        volume      = "opa_storage"
+        destination = "/etc/rules"
       }
 
       service {
-        name = "mongodb"
-        port = "db"
+        name = "opa"
+        provider = "consul"
+        port = "opa"
         check {
-          name     = "mongo-tcp"
           type     = "tcp"
           interval = "10s"
           timeout  = "2s"
@@ -43,10 +47,11 @@ job "mongo" {
       }
     }
 
-    volume "mongo_data" {
+    volume "opa_storage" {
       type      = "host"
       read_only = false
       source    = "data_storage"
     }
+
   }
 }

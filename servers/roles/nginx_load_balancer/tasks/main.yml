@@ -25,69 +25,33 @@
     mode: '0644'
   notify: restart nginx
 
-- name: configure app with tls support
+- name: configure site with tls support
   template:
-    src: templates/app.conf.j2
-    dest: /etc/nginx/sites-available/app.conf
+    src: templates/{{ item }}.conf.j2
+    dest: /etc/nginx/sites-available/{{ item }}.conf
     owner: root
     group: root
     mode: '0644'
+  loop:
+    - api
+    - app
+    - camunda
+    - kc
+    - stg
   notify: restart nginx
 
-- name: enable production app
+- name: enable site
   file:
-    src: /etc/nginx/sites-available/app.conf
-    dest: /etc/nginx/sites-enabled/app.conf
+    src: /etc/nginx/sites-available/{{ item }}.conf
+    dest: /etc/nginx/sites-enabled/{{ item }}.conf
     state: link
-  notify: restart nginx    
-
-- name: configure keycloak with tls support
-  template:
-    src: templates/kc.conf.j2
-    dest: /etc/nginx/sites-available/kc.conf
-    owner: root
-    group: root
-    mode: '0644'
+  loop:
+    - api
+    - app
+    - camunda
+    - kc
+    - stg
   notify: restart nginx
-
-- name: enable production keycloak
-  file:
-    src: /etc/nginx/sites-available/kc.conf
-    dest: /etc/nginx/sites-enabled/kc.conf
-    state: link
-  notify: restart nginx    
-
-- name: configure api with tls support
-  template:
-    src: templates/api.conf.j2
-    dest: /etc/nginx/sites-available/api.conf
-    owner: root
-    group: root
-    mode: '0644'
-  notify: restart nginx
-
-- name: enable production api
-  file:
-    src: /etc/nginx/sites-available/api.conf
-    dest: /etc/nginx/sites-enabled/api.conf
-    state: link
-  notify: restart nginx    
-
-- name: configure stg with tls support
-  template:
-    src: templates/stg.conf.j2
-    dest: /etc/nginx/sites-available/stg.conf
-    owner: root
-    group: root
-    mode: '0644'
-  notify: restart nginx
-
-- name: enable production stg
-  file:
-    src: /etc/nginx/sites-available/stg.conf
-    dest: /etc/nginx/sites-enabled/stg.conf
-    state: link
-  notify: restart nginx        
 
 - name: remove default site configuration
   file:

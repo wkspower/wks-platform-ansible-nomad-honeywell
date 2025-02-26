@@ -21,7 +21,7 @@
 
 - name: copy consul config file
   template:
-    src: "{{ consul_node_role }}.hcl.j2"
+    src: "{{ consul_node_role }}.j2"
     dest: /etc/consul.d/consul.hcl
     mode: '0644'
 

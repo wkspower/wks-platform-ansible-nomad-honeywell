@@ -1,7 +1,7 @@
 ---
 - name: copy mongo spec job to host
   template:
-    src: mongo.nomad.j2
+    src: mongo.nomad.hcl
     dest: /tmp/mongo.nomad
     mode: "0644"
 

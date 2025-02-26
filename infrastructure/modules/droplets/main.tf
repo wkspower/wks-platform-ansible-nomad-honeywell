@@ -45,5 +45,5 @@ resource "digitalocean_volume" "data_storage" {
 resource "digitalocean_volume_attachment" "attach_volume" {
   droplet_id = digitalocean_droplet.nodes[0].id
   volume_id  = digitalocean_volume.data_storage.id
-  depends_on = [digitalocean_droplet.nodes, digitalocean_volume.data_storage]
+  depends_on = [digitalocean_droplet.nodes]
 }

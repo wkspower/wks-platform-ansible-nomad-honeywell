@@ -40,7 +40,9 @@ job "case_portal" {
 
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.caseportal.rule=Host(`app.wkspower.dev`)",
+          "traefik.http.middlewares.caseportal-delpath.stripPrefix.Prefixes=/app",
+          "traefik.http.routers.caseportal.rule=PathPrefix(`/app`)",
+          "traefik.http.routers.caseportal.middlewares=caseportal-delpath",
           "traefik.http.routers.caseportal.entrypoints=web"
         ]
       }

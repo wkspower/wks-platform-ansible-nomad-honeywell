@@ -16,6 +16,21 @@ client {
     read_only = false
   }
 
+  host_volume "pgdata" {
+    path      = "/mnt/data_storage/pgdata"
+    read_only = false
+  }
+
+  host_volume "miniodata" {
+    path      = "/mnt/data_storage/minio"
+    read_only = false
+  }
+
+  host_volume "mongodata" {
+    path      = "/mnt/data_storage/mongo"
+    read_only = false
+  }  
+
   meta {
     role = "{{ nomad_meta_role }}"
   }

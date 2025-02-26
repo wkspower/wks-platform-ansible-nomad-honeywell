@@ -1,9 +1,16 @@
-- name: update packages and cache
+- name: update packages on Debian/Ubuntu
   apt:
     update_cache: yes
     upgrade: dist
+  when: ansible_os_family == "Debian"
 
-- name: install core packages 
+- name: update packages on RHEL/CentOS
+  yum:
+    name: "*"
+    state: latest
+  when: ansible_os_family == "RedHat"
+
+- name: install packages on Debian/Ubuntu
   apt:
     name: "{{ item }}"
     state: present
@@ -13,3 +20,16 @@
     - unzip
     - git
     - jq
+  when: ansible_os_family == "Debian"
+
+- name: install packages on RHEL/CentOS
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - curl
+    - wget
+    - unzip
+    - git
+    - jq
+  when: ansible_os_family == "RedHat"

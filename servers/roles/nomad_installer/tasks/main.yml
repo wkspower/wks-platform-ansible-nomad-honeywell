@@ -21,7 +21,7 @@
 
 - name: copy nomad config file
   template:
-    src: "{{ nomad_node_role }}.hcl.j2"
+    src: "{{ nomad_node_role }}.hcl"
     dest: /etc/nomad.d/nomad.hcl
     mode: '0644'
 
@@ -30,6 +30,71 @@
     name: nomad
     append: yes
     groups: docker
+
+- name: ensure /opt/cni/bin directory exists
+  file:
+    path: "{{ cni_plugins_install_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: download CNI plugins tarball
+  get_url:
+    url: "{{ cni_plugins_url }}"
+    dest: "{{ cni_plugins_download_path }}"
+    mode: '0644'
+
+- name: extract CNI plugins tarball
+  unarchive:
+    src: "{{ cni_plugins_download_path }}"
+    dest: "/tmp"
+    remote_src: yes
+
+- name: copy selected CNI plugins to /opt/cni/bin
+  copy:
+    src: "{{ cni_plugins_extracted_path }}/{{ item }}"
+    dest: "{{ cni_plugins_install_dir }}/"
+    remote_src: yes
+    mode: '0755'
+    owner: root
+    group: root
+  loop:
+    - bridge
+    - host-local
+    - loopback
+    - portmap
+    - tuning
+    - bandwidth
+    - dhcp
+    - firewall
+    - host-device
+    - ipvlan
+    - macvlan
+    - ptp
+    - sbr
+    - static
+    - tap
+    - vlan
+    - vrf    
+
+- name: clean up temporary files
+  file:
+    path: "{{ cni_plugins_download_path }}"
+    state: absent
+  when: cni_plugins_download_path is not none
+
+- name: create storage dirs
+  file:
+    path: /mnt/data_storage/{{ item }}
+    state: directory
+    mode: '0755'
+  loop:
+    - pgdata
+    - minio
+    - mongo
+    - camunda
+    - keycloak
 
 - name: create systemd service to nomad
   copy:

@@ -51,7 +51,7 @@
 
 - name: configure docker to auth in the gcr
   template:
-    src: docker_config.json.j2
+    src: docker_config.json
     dest: /root/.docker/config.json
     mode: '0600'
 

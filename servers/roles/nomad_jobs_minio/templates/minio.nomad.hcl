@@ -8,8 +8,11 @@ job "minio" {
 
   group "minio" {
     network {
+      mode = "bridge"    
+
       port "minio" {
         static = 9000
+        to     = 9000
       }
     }
 
@@ -51,7 +54,7 @@ job "minio" {
     volume "minio_data" {
       type      = "host"
       read_only = false
-      source    = "data_storage"
+      source    = "miniodata"
     }
   }
 }

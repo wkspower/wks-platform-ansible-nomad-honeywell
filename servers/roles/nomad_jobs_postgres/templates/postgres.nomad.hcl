@@ -8,8 +8,11 @@ job "postgres" {
 
   group "db" {
     network {
+      mode = "bridge"
+
       port "db" {
         static = 5432
+        to     = 5432
       }
     }
 
@@ -24,13 +27,25 @@ job "postgres" {
             
       config {
         image = "postgres:15"
-        command = "sh"
-        args = [
-          "-c",
-          "rm -rf /var/lib/postgresql/data/* && docker-entrypoint.sh postgres"
-        ]        
         ports = ["db"]
+        volumes = [
+          "local/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh"
+        ]        
       }
+
+      template {
+        data = <<-EOF
+        #!/bin/bash
+        set -e
+        psql -v ON_ERROR_STOP=1 --username {{ postgres_user }} --dbname {{ postgres_database }} <<-EOSQL
+          CREATE USER camunda WITH PASSWORD 'camunda00';
+          CREATE USER keycloak WITH PASSWORD 'keycloak00';
+          CREATE DATABASE camunda WITH OWNER camunda;
+          CREATE DATABASE keycloak WITH OWNER keycloak;
+        EOSQL
+        EOF
+        destination = "local/init-db.sh"
+      }      
 
       resources {
         cpu    = 1000
@@ -57,7 +72,7 @@ job "postgres" {
     volume "postgres_data" {
       type      = "host"
       read_only = false
-      source    = "data_storage"
+      source    = "pgdata"
     }
   }
 }

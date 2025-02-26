@@ -7,17 +7,22 @@ job "camunda7" {
   }
 
   group "camunda" {
+    count = 1
+
     network {
+      mode = "bridge"
+      
       port "http" {
-        static = 8080
+        static = 7000
+        to     = 8080 
       }
     }
 
     task "camunda7" {
-      driver = "raw_exec"
+      driver = "docker"
 
       config {
-        image = "java -jar camunda.jar"
+        image = "camunda/camunda-bpm-platform:run-7.20.0"
         args = [
           "./camunda.sh",
           "--rest",
@@ -26,9 +31,17 @@ job "camunda7" {
         ports = ["http"]
       }
 
+      env {
+        DB_DRIVER="org.postgresql.Driver"
+        DB_URL="jdbc:postgresql://postgres.service.consul:5432/camunda"
+        DB_USERNAME="camunda"
+        DB_PASSWORD="camunda00"
+        DB_VALIDATE_ON_BORROW="false"
+      }      
+
       resources {
         cpu    = 500
-        memory = 1024
+        memory = 720
       }
 
       service {

@@ -7,7 +7,7 @@
 
 - name: copy opa spec job to host
   template:
-    src: opa.nomad.j2
+    src: opa.nomad.hcl
     dest: /tmp/opa.nomad
     mode: "0644"
 

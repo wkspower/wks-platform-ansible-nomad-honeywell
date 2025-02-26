@@ -1,7 +1,7 @@
 ---
 - name: copy camunda7 spec job to host
   template:
-    src: camunda7.nomad.j2
+    src: camunda7.nomad.hcl
     dest: /tmp/camunda7.nomad
     mode: "0644"
 
