@@ -69,7 +69,7 @@ ansible-playbook -i inventory/hosts initial_setup.yml
 copy ipv4 from vmbaremaster and replace by ipv4
 
 ```bash
-ssh -i ~/.ssh/id_rsa_deployer -L 167.99.9.143:4646 deployer@167.99.9.143
+ssh -i ~/.ssh/id_rsa_deployer -L 4646:10.10.67.01:4646 deployer@10.10.67.01
 open http://localhost:4646
 ```
 
