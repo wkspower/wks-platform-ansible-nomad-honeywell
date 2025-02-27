@@ -57,14 +57,7 @@ cd ./servers
 ansible-playbook -i inventory/hosts initial_setup.yml
 ```
 
-## step 6 - deploy
-
-```bash
-cd ./servers
-ansible-playbook -i inventory/hosts initial_setup.yml
-```
-
-## step 7 - configure dns name
+## step 6 - configure dns name
 
 * open file definitions
 
@@ -74,7 +67,7 @@ code ./inventory/hosts
 
 * assign the DNS value to the 'dns_name' variable.
 
-## step 8 - checking cluster info (optional)
+## step 7 - checking cluster info (optional)
 
 copy ipv4 from vmbaremaster and replace by ipv4
 
@@ -83,7 +76,7 @@ ssh -i ~/.ssh/id_rsa_deployer -L 4646:10.10.67.01:4646 deployer@10.10.67.01
 open http://localhost:4646
 ```
 
-## step 9 - deploy all servers on the cluster
+## step 8 - deploy all servers on the cluster
 
 ```bash
 ansible-playbook -i inventory/hosts playbooks/01_deploy_open_policy.yml
@@ -95,7 +88,7 @@ ansible-playbook -i inventory/hosts playbooks/06_deploy_keycloak.yml
 ansible-playbook -i inventory/hosts playbooks/07_deploy_traefik.yml
 ```
 
-## step 10 - deploy all apps on the cluster
+## step 9 - deploy all apps on the cluster
 
 ```bash
 ansible-playbook -i inventory/hosts playbooks/publish_docker_images_remote_host.yml
