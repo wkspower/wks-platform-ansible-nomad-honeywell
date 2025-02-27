@@ -29,3 +29,7 @@ variable "sshkey" {
 variable "volumesize" {
   type = number
 }
+
+variable "image" {
+  type = string
+}

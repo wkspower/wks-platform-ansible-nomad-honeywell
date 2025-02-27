@@ -3,4 +3,4 @@ data_dir   = "/var/lib/consul"
 bind_addr  = "0.0.0.0"
 advertise_addr = "{{ ansible_host }}"
 server = false
-retry_join = ["{{ master_address }}"]
+retry_join = ["{{ hostvars['vmbaremaster'].ansible_host }}"]

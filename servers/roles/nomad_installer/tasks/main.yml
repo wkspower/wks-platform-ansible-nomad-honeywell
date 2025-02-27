@@ -1,37 +1,64 @@
-- name: add HashiCorp gpg key
+---
+- name: Add HashiCorp gpg key (Debian/Ubuntu)
   apt_key:
     url: https://apt.releases.hashicorp.com/gpg
     state: present
+  when: ansible_os_family == "Debian"
 
-- name: add HashiCorp repository
+- name: Add HashiCorp repository (Debian/Ubuntu)
   apt_repository:
-    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ distribution_codename }} main"
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main"
     state: present
+  when: ansible_os_family == "Debian"
 
-- name: install nomad
+- name: Install Nomad (Debian/Ubuntu)
   apt:
     name: nomad
     state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
 
-- name: create config dir to nomad
+- name: Add HashiCorp GPG key (RHEL/CentOS)
+  rpm_key:
+    state: present
+    key: https://rpm.releases.hashicorp.com/gpg
+  when: ansible_os_family == "RedHat"
+
+- name: Install yum-utils or dnf-plugins-core (RHEL/CentOS)
+  yum:
+    name: "{{ 'yum-utils' if ansible_distribution_major_version|int < 9 else 'dnf-plugins-core' }}"
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Add HashiCorp repository (RHEL/CentOS)
+  command: yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  when: ansible_os_family == "RedHat"
+
+- name: Install Nomad (RHEL/CentOS)
+  yum:
+    name: nomad
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Create config dir for Nomad
   file:
     path: /etc/nomad.d
     state: directory
     mode: '0755'
 
-- name: copy nomad config file
+- name: Copy Nomad config file
   template:
     src: "{{ nomad_node_role }}.hcl"
     dest: /etc/nomad.d/nomad.hcl
     mode: '0644'
 
-- name: add user nomad to docker group
+- name: Add user nomad to docker group
   user:
     name: nomad
     append: yes
     groups: docker
 
-- name: ensure /opt/cni/bin directory exists
+- name: Ensure /opt/cni/bin directory exists
   file:
     path: "{{ cni_plugins_install_dir }}"
     state: directory
@@ -39,19 +66,19 @@
     group: root
     mode: '0755'
 
-- name: download CNI plugins tarball
+- name: Download CNI plugins tarball
   get_url:
     url: "{{ cni_plugins_url }}"
     dest: "{{ cni_plugins_download_path }}"
     mode: '0644'
 
-- name: extract CNI plugins tarball
+- name: Extract CNI plugins tarball
   unarchive:
     src: "{{ cni_plugins_download_path }}"
     dest: "/tmp"
     remote_src: yes
 
-- name: copy selected CNI plugins to /opt/cni/bin
+- name: Copy selected CNI plugins to /opt/cni/bin
   copy:
     src: "{{ cni_plugins_extracted_path }}/{{ item }}"
     dest: "{{ cni_plugins_install_dir }}/"
@@ -76,17 +103,17 @@
     - static
     - tap
     - vlan
-    - vrf    
+    - vrf
 
-- name: clean up temporary files
+- name: Clean up temporary CNI tarball
   file:
     path: "{{ cni_plugins_download_path }}"
     state: absent
   when: cni_plugins_download_path is not none
 
-- name: create storage dirs
+- name: Create storage dirs
   file:
-    path: /mnt/data_storage/{{ item }}
+    path: "/mnt/data_storage/{{ item }}"
     state: directory
     mode: '0755'
   loop:
@@ -96,7 +123,7 @@
     - camunda
     - keycloak
 
-- name: create systemd service to nomad
+- name: Create systemd service for Nomad
   copy:
     dest: /etc/systemd/system/nomad.service
     content: |
@@ -113,7 +140,7 @@
       [Install]
       WantedBy=multi-user.target
 
-- name: enabled and start nomad
+- name: Enable and start Nomad
   systemd:
     name: nomad
     state: restarted

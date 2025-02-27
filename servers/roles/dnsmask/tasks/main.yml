@@ -1,23 +1,31 @@
 ---
-- name: install dnsmasq
+- name: Install dnsmasq (Debian/Ubuntu)
   apt:
     name: dnsmasq
     state: present
     update_cache: yes
+  when: ansible_os_family == "Debian"
 
-- name: stop and disable systemd-resolved (if running)
+- name: Install dnsmasq (RHEL/CentOS)
+  yum:
+    name: dnsmasq
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Stop and disable systemd-resolved (if running)
   systemd:
     name: systemd-resolved
     state: stopped
     enabled: false
   ignore_errors: yes
+  when: ansible_os_family == "Debian"
 
-- name: remove existing /etc/resolv.conf if present
+- name: Remove existing /etc/resolv.conf if present
   file:
     path: /etc/resolv.conf
     state: absent
 
-- name: create new /etc/resolv.conf with dnsmasq as resolver
+- name: Create new /etc/resolv.conf with dnsmasq as resolver
   copy:
     dest: /etc/resolv.conf
     content: |
@@ -26,7 +34,7 @@
     group: root
     mode: '0644'
 
-- name: create dnsmasq configuration file for consul dns
+- name: Create dnsmasq configuration file for consul dns
   copy:
     dest: /etc/dnsmasq.d/consul.conf
     content: |
@@ -36,7 +44,7 @@
     group: root
     mode: '0644'
 
-- name: create custom resolv.conf file for docker containers
+- name: Create custom resolv.conf file for docker containers
   copy:
     dest: /etc/custom_resolv.conf
     content: |
@@ -46,7 +54,7 @@
     group: root
     mode: '0644'
 
-- name: configure docker daemon with custom dns settings
+- name: Configure docker daemon with custom dns settings
   copy:
     dest: /etc/docker/daemon.json
     content: |
@@ -58,12 +66,12 @@
     group: root
     mode: '0644'
 
-- name: restart docker
+- name: Restart docker
   systemd:
     name: docker
-    state: restarted    
+    state: restarted
 
-- name: restart dnsmasq service to apply changes
+- name: Restart dnsmasq service to apply changes
   systemd:
     name: dnsmasq
     state: restarted

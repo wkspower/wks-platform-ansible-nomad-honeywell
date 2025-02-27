@@ -7,9 +7,9 @@ server {
 }
 
 advertise {
-  http = "{{ master_address }}"
-  rpc  = "{{ master_address }}"
-  serf = "{{ master_address }}"
+  http = "{{ hostvars['vmbaremaster'].ansible_host }}"
+  rpc  = "{{ hostvars['vmbaremaster'].ansible_host }}"
+  serf = "{{ hostvars['vmbaremaster'].ansible_host }}"
 }
 
 plugin "docker" {

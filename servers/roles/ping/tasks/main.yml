@@ -1,0 +1,3 @@
+---
+- name: Check connectivity (Ping)
+  ansible.builtin.ping:

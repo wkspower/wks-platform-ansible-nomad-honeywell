@@ -9,7 +9,7 @@ consul {
 client {
   enabled = true
 
-  servers = ["{{ master_address }}:4647"]
+  servers = ["{{ hostvars['vmbaremaster'].ansible_host }}:4647"]
   
   host_volume "data_storage" {
     path      = "/mnt/data_storage"

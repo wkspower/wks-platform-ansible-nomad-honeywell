@@ -6,8 +6,9 @@ resource "digitalocean_ssh_key" "deployer" {
 module "lb" {
   source     = "./modules/droplets"
   name       = "vmbare-lb"
-  vmsize     = "s-1vcpu-1gb"
+  vmsize     = "s-1vcpu-2gb"
   volumesize = 20
+  image      = "centos-stream-9-x64"
   region     = var.region
   ssh_key    = var.ssh_key
   do_token   = var.do_token
@@ -20,6 +21,7 @@ module "master" {
   name       = "vmbare-master"
   vmsize     = "s-1vcpu-2gb"
   volumesize = 20
+  image      = "centos-stream-9-x64"  
   region     = var.region
   ssh_key    = var.ssh_key
   do_token   = var.do_token
@@ -32,6 +34,7 @@ module "app1" {
   name       = "vmbare-app1"
   vmsize     = "s-2vcpu-4gb"
   volumesize = 20
+  image      = "centos-stream-9-x64"  
   region     = var.region
   ssh_key    = var.ssh_key
   do_token   = var.do_token
@@ -45,6 +48,7 @@ module "app2" {
   vmsize     = "s-2vcpu-4gb"
   volumesize = 20
   region     = var.region
+  image      = "centos-stream-9-x64"  
   ssh_key    = var.ssh_key
   do_token   = var.do_token
   sshkey     = digitalocean_ssh_key.deployer.fingerprint

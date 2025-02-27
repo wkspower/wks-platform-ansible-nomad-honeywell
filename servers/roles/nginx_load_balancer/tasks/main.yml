@@ -1,14 +1,22 @@
 ---
-- name: update apt cache
+- name: Update apt cache (Debian/Ubuntu)
   apt:
     update_cache: yes
+  when: ansible_os_family == "Debian"
 
-- name: install nginx on systems
+- name: Install nginx (Debian/Ubuntu)
   apt:
     name: nginx
     state: present
+  when: ansible_os_family == "Debian"
 
-- name: create directory for tls certificates
+- name: Install nginx (RHEL/CentOS)
+  yum:
+    name: nginx
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Create directory for TLS certificates
   file:
     path: "{{ tls_cert_dir }}"
     state: directory
@@ -16,7 +24,7 @@
     group: root
     mode: '0755'
 
-- name: configure main nginx configuration file
+- name: Configure main nginx.conf
   template:
     src: templates/nginx.conf.j2
     dest: /etc/nginx/nginx.conf
@@ -25,10 +33,10 @@
     mode: '0644'
   notify: restart nginx
 
-- name: configure site with tls support
+- name: Configure each site with TLS support
   template:
-    src: templates/{{ item }}.conf.j2
-    dest: /etc/nginx/sites-available/{{ item }}.conf
+    src: "templates/{{ item }}.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ item }}.conf"
     owner: root
     group: root
     mode: '0644'
@@ -40,10 +48,10 @@
     - stg
   notify: restart nginx
 
-- name: enable site
+- name: Enable each site
   file:
-    src: /etc/nginx/sites-available/{{ item }}.conf
-    dest: /etc/nginx/sites-enabled/{{ item }}.conf
+    src: "/etc/nginx/sites-available/{{ item }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ item }}.conf"
     state: link
   loop:
     - api
@@ -53,7 +61,7 @@
     - stg
   notify: restart nginx
 
-- name: remove default site configuration
+- name: Remove default site configuration
   file:
     path: /etc/nginx/sites-enabled/default
     state: absent

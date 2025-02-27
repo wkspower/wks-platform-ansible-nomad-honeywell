@@ -3,7 +3,7 @@ resource "digitalocean_droplet" "nodes" {
   name     = var.name
   region   = var.region
   size     = var.vmsize
-  image    = "ubuntu-22-04-x64"
+  image    = var.image
   ssh_keys = [var.sshkey]
   tags     = var.tags
   
@@ -16,22 +16,24 @@ resource "digitalocean_droplet" "nodes" {
     }
 
     inline = [
-      "adduser --disabled-password --gecos '' deployer",
+      "if [ -f /etc/debian_version ]; then adduser --disabled-password --gecos '' deployer; else useradd deployer; fi",
       "mkdir -p /home/deployer/.ssh",
       "cp /root/.ssh/authorized_keys /home/deployer/.ssh/authorized_keys",
       "chown -R deployer:deployer /home/deployer/.ssh",
       "chmod 700 /home/deployer/.ssh",
       "chmod 600 /home/deployer/.ssh/authorized_keys",
       "echo 'deployer ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers",
+      
       "sed -i 's/^PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config",
       "sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config",
-      "systemctl restart sshd",
-
+      "if systemctl list-units --type=service | grep -q '^sshd.service'; then systemctl restart sshd; elif systemctl list-units --type=service | grep -q '^ssh.service'; then systemctl restart ssh; fi",
+      
       "while [ ! -e /dev/disk/by-id/scsi-0DO_Volume_${var.name}-data-storage ]; do echo 'waiting volume...'; sleep 2; done",
       "if [ -z \"$(blkid /dev/disk/by-id/scsi-0DO_Volume_${var.name}-data-storage)\" ]; then mkfs.ext4 /dev/disk/by-id/scsi-0DO_Volume_${var.name}-data-storage; fi",
+      
       "mkdir -p /mnt/data_storage",
       "mount /dev/disk/by-id/scsi-0DO_Volume_${var.name}-data-storage /mnt/data_storage",
-      "UUID=$(blkid -s UUID -o value /dev/disk/by-id/scsi-0DO_Volume_${var.name}-data-storage) && echo \"UUID=$UUID /mnt/volume ext4 defaults,nofail 0 2\" >> /etc/fstab",
+      "UUID=$(blkid -s UUID -o value /dev/disk/by-id/scsi-0DO_Volume_${var.name}-data-storage) && echo \"UUID=$UUID /mnt/data_storage ext4 defaults,nofail 0 2\" >> /etc/fstab",
     ]
   }
 }
@@ -45,5 +47,5 @@ resource "digitalocean_volume" "data_storage" {
 resource "digitalocean_volume_attachment" "attach_volume" {
   droplet_id = digitalocean_droplet.nodes[0].id
   volume_id  = digitalocean_volume.data_storage.id
-  depends_on = [digitalocean_droplet.nodes]
+  depends_on = [digitalocean_droplet.nodes, digitalocean_volume.data_storage]
 }

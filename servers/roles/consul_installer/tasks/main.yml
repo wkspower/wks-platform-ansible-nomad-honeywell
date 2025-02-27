@@ -1,31 +1,58 @@
-- name: add HashiCorp gpg key
+---
+- name: Add HashiCorp GPG key (Debian/Ubuntu)
   apt_key:
     url: https://apt.releases.hashicorp.com/gpg
     state: present
+  when: ansible_os_family == "Debian"
 
-- name: add HashiCorp repository
+- name: Add HashiCorp repository (Debian/Ubuntu)
   apt_repository:
-    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ distribution_codename }} main"
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main"
     state: present
+  when: ansible_os_family == "Debian"
 
-- name: install consul
+- name: Install Consul (Debian/Ubuntu)
   apt:
     name: consul
     state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
 
-- name: create config dir to consul
+- name: Add HashiCorp GPG key (RHEL/CentOS)
+  rpm_key:
+    state: present
+    key: https://rpm.releases.hashicorp.com/gpg
+  when: ansible_os_family == "RedHat"
+
+- name: Install yum-utils or dnf-plugins-core (RHEL/CentOS)
+  yum:
+    name: "{{ 'yum-utils' if ansible_distribution_major_version|int < 9 else 'dnf-plugins-core' }}"
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Add HashiCorp repository (RHEL/CentOS)
+  command: yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  when: ansible_os_family == "RedHat"  
+
+- name: Install Consul (RHEL/CentOS)
+  yum:
+    name: consul
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Create config dir for Consul
   file:
     path: /etc/consul.d
     state: directory
     mode: '0755'
 
-- name: copy consul config file
+- name: Copy Consul config file
   template:
     src: "{{ consul_node_role }}.j2"
     dest: /etc/consul.d/consul.hcl
     mode: '0644'
 
-- name: create systemd service to consul
+- name: Create systemd service for Consul
   copy:
     dest: /etc/systemd/system/consul.service
     content: |
@@ -42,7 +69,7 @@
       [Install]
       WantedBy=multi-user.target
 
-- name: enabled and start consul
+- name: Enable and start consul
   systemd:
     name: consul
     state: restarted
