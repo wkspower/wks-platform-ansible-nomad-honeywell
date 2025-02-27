@@ -1,24 +1,23 @@
 ---
-- name: Install dnsmasq (Debian/Ubuntu)
-  apt:
-    name: dnsmasq
-    state: present
-    update_cache: yes
-  when: ansible_os_family == "Debian"
-
 - name: Install dnsmasq (RHEL/CentOS)
   yum:
     name: dnsmasq
     state: present
   when: ansible_os_family == "RedHat"
 
-- name: Stop and disable systemd-resolved (if running)
+- name: Disable NetworkManager DNS management (CentOS/RHEL)
+  lineinfile:
+    path: /etc/NetworkManager/NetworkManager.conf
+    regexp: '^dns='
+    line: 'dns=none'
+    create: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Restart NetworkManager
   systemd:
-    name: systemd-resolved
-    state: stopped
-    enabled: false
-  ignore_errors: yes
-  when: ansible_os_family == "Debian"
+    name: NetworkManager
+    state: restarted
+  when: ansible_os_family == "RedHat"
 
 - name: Remove existing /etc/resolv.conf if present
   file:
@@ -30,11 +29,13 @@
     dest: /etc/resolv.conf
     content: |
       nameserver 127.0.0.1
+      nameserver 8.8.8.8
+      nameserver 1.1.1.1
     owner: root
     group: root
     mode: '0644'
 
-- name: Create dnsmasq configuration file for consul dns
+- name: Configure dnsmasq for Consul DNS forwarding
   copy:
     dest: /etc/dnsmasq.d/consul.conf
     content: |
@@ -44,22 +45,31 @@
     group: root
     mode: '0644'
 
-- name: Create custom resolv.conf file for docker containers
+- name: Configure dnsmasq to listen on host IP as well as loopback
+  copy:
+    dest: /etc/dnsmasq.d/host.conf
+    content: |
+      listen-address=127.0.0.1,{{ ansible_default_ipv4.address }}
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create custom resolv.conf file for docker containers (optional backup)
   copy:
     dest: /etc/custom_resolv.conf
     content: |
-      nameserver 127.0.0.1
+      nameserver {{ ansible_default_ipv4.address }}
       search service.consul
     owner: root
     group: root
     mode: '0644'
 
-- name: Configure docker daemon with custom dns settings
+- name: Configure docker daemon with custom DNS settings
   copy:
     dest: /etc/docker/daemon.json
     content: |
       {
-        "dns": ["{{ ansible_default_ipv4.address }}", "8.8.8.8", "127.0.0.1"],
+        "dns": ["{{ ansible_default_ipv4.address }}", "8.8.8.8"],
         "dns-search": ["service.consul"]
       }
     owner: root
