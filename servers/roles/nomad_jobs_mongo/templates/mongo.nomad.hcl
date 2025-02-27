@@ -10,6 +10,8 @@ job "mongo" {
     count = 1
 
     network {
+      mode = "bridge"
+      
       port "tcp" {
         static = 27017
         to     = 27017

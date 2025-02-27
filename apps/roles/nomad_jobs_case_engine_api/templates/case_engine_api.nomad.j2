@@ -3,8 +3,11 @@ job "case_engine_api" {
 
   group "apps" {
     network {
+      mode = "bridge"
+
       port "http" {
         static = 8081
+        to     = 8081
       }
     }
 

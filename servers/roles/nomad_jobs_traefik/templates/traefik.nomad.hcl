@@ -5,9 +5,11 @@ job "traefik" {
     count = 1
 
     network {
+      mode = "bridge"
+      
       port "http" {
         static = 80
-        to     = 90
+        to     = 80
       }
 
       port "https" {

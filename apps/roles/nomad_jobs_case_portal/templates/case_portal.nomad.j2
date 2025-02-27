@@ -3,8 +3,11 @@ job "case_portal" {
 
   group "apps" {
     network {
+      mode = "bridge"
+
       port "http" {
         static = 80
+        to     = 80
       }
     }
 
@@ -22,9 +25,9 @@ job "case_portal" {
       }
 
       env {
-        __SERVER_KEYCLOAK_URL__="https://login.{{ dns_name }}"
-        __SERVER_API_URL__="https://api.{{ dns_name }}"
-        __SERVER_STORAGE_URL__="https://stg.{{ dns_name }}"
+        __SERVER_KEYCLOAK_URL__="https://{{ subdomain_dns_name }}login.{{ dns_name }}"
+        __SERVER_API_URL__="https://{{ subdomain_dns_name }}api.{{ dns_name }}"
+        __SERVER_STORAGE_URL__="https://{{ subdomain_dns_name }}stg.{{ dns_name }}"
         __SERVER_WEBSOCKETS_ENABLED__="false"
         __SERVER_WEBSOCKETS_URL__=""
         __SERVER_WEBSOCKETS_CASE_CREATED__=""

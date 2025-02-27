@@ -3,8 +3,11 @@ job "c7_external_tasks" {
 
   group "apps" {
     network {
+      mode = "bridge"
+
       port "http" {
         static = 8081
+        to     = 8081
       }
     }
 

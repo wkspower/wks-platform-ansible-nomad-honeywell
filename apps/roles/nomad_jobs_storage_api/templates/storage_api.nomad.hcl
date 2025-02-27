@@ -3,8 +3,11 @@ job "storage_api" {
 
   group "apps" {
     network {
+      mode = "bridge"
+
       port "http" {
         static = 8085
+        to     = 8085
       }
     }
 
