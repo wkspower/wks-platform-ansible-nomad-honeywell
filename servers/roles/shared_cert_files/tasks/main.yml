@@ -1,9 +1,18 @@
+---
+- name: Create directory for TLS certificates
+  file:
+    path: "{{ tls_cert_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
 - name: cp cert file to remote host
   copy:
-    src: wkspower_dev.crt
-    dest: "{{ tls_crt_dest }}"
+    src: server.crt
+    dest: "{{ tls_cert_dir }}/server.crt"
 
 - name: cp private key file to remote host
   copy:
-    src: wkspower_dev.key
-    dest: "{{ tls_key_dest }}"
+    src: server.key
+    dest: "{{ tls_cert_dir }}/server.key"

@@ -6,10 +6,10 @@ job "keycloak" {
     value     = "{{ constraint }}"
   }
 
-  group "keycloak" {
+  group "apps" {
+    count = 1
+    
     network {
-      mode = "bridge"
-      
       port "http" {
         static = 8080
         to     = 8080 
@@ -39,8 +39,8 @@ job "keycloak" {
         KC_METRICS_ENABLED            = "true"
         KC_HOSTNAME                   = "login.wkspower.dev"
         KC_HOSTNAME_ADMIN             = "iam.wkspower.dev"
-        KC_HTTPS_CERTIFICATE_KEY_FILE = "/certs/tls.key"
-        KC_HTTPS_CERTIFICATE_FILE     = "/certs/tls.crt"
+        KC_HTTPS_CERTIFICATE_KEY_FILE = "/certs/server.key"
+        KC_HTTPS_CERTIFICATE_FILE     = "/certs/server.crt"
         KC_DB                         = "postgres"
         KC_DB_URL                     = "jdbc:postgresql://postgres.service.consul:5432/keycloak"
         KC_DB_USERNAME                = "keycloak"

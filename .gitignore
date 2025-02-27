@@ -7,6 +7,7 @@ users.txt
 age.txt
 terraform.tfstate
 terraform.tfstate.backup
+.terraform.lock.hcl
 secret-default.yaml
 secret-notify.yaml
 *.crt

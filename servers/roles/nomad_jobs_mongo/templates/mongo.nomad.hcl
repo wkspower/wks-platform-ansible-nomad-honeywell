@@ -6,10 +6,10 @@ job "mongo" {
     value     = "{{ constraint }}"
   }
 
-  group "mongo" {
-    network {
-      mode = "bridge"
+  group "apps" {
+    count = 1
 
+    network {
       port "tcp" {
         static = 27017
         to     = 27017

@@ -1,8 +1,0 @@
-
----
-- hosts: lb
-  become: yes
-  roles:
-    - role: nginx_load_balancer
-      tls_crt_dest: "/etc/nginx/ssl/wkspower_dev.crt"
-      tls_key_dest: "/etc/nginx/ssl/wkspower_dev.key"

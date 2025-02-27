@@ -6,12 +6,10 @@ job "camunda7" {
     value     = "{{ constraint }}"
   }
 
-  group "camunda" {
+  group "apps" {
     count = 1
 
     network {
-      mode = "bridge"
-      
       port "http" {
         static = 7000
         to     = 8080 

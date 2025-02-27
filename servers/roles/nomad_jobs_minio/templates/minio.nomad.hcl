@@ -6,10 +6,10 @@ job "minio" {
     value     = "{{ constraint }}"
   }
 
-  group "minio" {
-    network {
-      mode = "bridge"    
+  group "apps" {
+    count  = 1
 
+    network {
       port "minio" {
         static = 9000
         to     = 9000

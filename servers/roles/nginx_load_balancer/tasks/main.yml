@@ -16,13 +16,14 @@
     state: present
   when: ansible_os_family == "RedHat"
 
-- name: Create directory for TLS certificates
+- name: Create empty directory (RHEL/CentOS)
   file:
-    path: "{{ tls_cert_dir }}"
+    path: "/etc/nginx/sites-available"
     state: directory
     owner: root
     group: root
     mode: '0755'
+  when: ansible_os_family == "RedHat"
 
 - name: Configure main nginx.conf
   template:
@@ -33,7 +34,7 @@
     mode: '0644'
   notify: restart nginx
 
-- name: Configure each site with TLS support
+- name: Configure each site with TLS support (Debian/Ubuntu)
   template:
     src: "templates/{{ item }}.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item }}.conf"
@@ -47,8 +48,9 @@
     - kc
     - stg
   notify: restart nginx
+  when: ansible_os_family == "Debian"
 
-- name: Enable each site
+- name: Enable each site (Debian/Ubuntu)
   file:
     src: "/etc/nginx/sites-available/{{ item }}.conf"
     dest: "/etc/nginx/sites-enabled/{{ item }}.conf"
@@ -60,6 +62,23 @@
     - kc
     - stg
   notify: restart nginx
+  when: ansible_os_family == "Debian"
+
+- name: Configure each site with TLS support (RHEL/CentOS)
+  template:
+    src: "templates/{{ item }}.conf.j2"
+    dest: "/etc/nginx/conf.d/{{ item }}.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - api
+    - app
+    - camunda
+    - kc
+    - stg
+  notify: restart nginx
+  when: ansible_os_family == "RedHat"
 
 - name: Remove default site configuration
   file:

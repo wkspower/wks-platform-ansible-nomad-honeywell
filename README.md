@@ -72,3 +72,19 @@ ssh -i ~/.ssh/id_rsa_deployer -L 4646:104.248.57.30:4646 -L 7005:traefik.service
 [demo-mb].wkspower.dev
      => org
 ```
+
+### Credencials
+
+```bash
+https://demo-bm.wkspower.dev/
+user: victor
+password: victor00
+
+https://camunda.wkspower.dev/
+user: demo
+password: demo00
+
+https://iam.wkspower.dev/
+user: admin
+password: admin00
+```

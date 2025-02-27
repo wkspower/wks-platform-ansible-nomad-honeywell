@@ -6,10 +6,10 @@ job "opa" {
     value     = "{{ constraint }}"
   }
 
-  group "opa" {
+  group "apps" {
+    count = 1
+    
     network {
-      mode = "bridge"
-      
       port "opa" {
         static = 8181
         to     = 8181

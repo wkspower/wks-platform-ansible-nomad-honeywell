@@ -1,3 +1,4 @@
+---
 - hosts: all
   become: yes
   gather_facts: yes
@@ -38,3 +39,11 @@
     - role: nomad_installer
       nomad_meta_role: "app2"
       nomad_node_role: "client"
+
+- hosts: lb
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: ping
+    - role: nginx_load_balancer      
+
