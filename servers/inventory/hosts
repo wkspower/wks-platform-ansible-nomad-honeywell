@@ -18,3 +18,4 @@ app2
 ansible_user=deployer
 ansible_ssh_private_key_file=~/.ssh/id_rsa_deployer
 ubuntu_distribution_codename=jammy
+dns_name=wkspower.dev

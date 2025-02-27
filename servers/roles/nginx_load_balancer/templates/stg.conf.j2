@@ -1,12 +1,12 @@
 server {
     listen  80;
-    server_name stg.wkspower.dev;
+    server_name stg.{{ dns_name }};
     return 301 https://$host$request_uri;
 }
 
 server {
     listen  443;
-    server_name stg.wkspower.dev;
+    server_name stg.{{ dns_name }};
 
     ssl on;
     ssl_certificate {{ tls_crt_dest }};

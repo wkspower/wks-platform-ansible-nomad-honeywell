@@ -45,7 +45,7 @@ http {
     gzip_types       text/plain application/x-javascript text/xml text/css application/xml;
 
     upstream wkspower_api_gateway {
-        server 137.184.65.121;
+        server {{ hostvars['vmbareapp1'].ansible_host }};
     }
 
     include /etc/nginx/conf.d/*.conf;
