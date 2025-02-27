@@ -4,19 +4,19 @@ upstream keycloack {
 
 server {
     listen  80;
-    server_name login.{{ dns_name }};
+    server_name {{ subdomain_dns_name }}login.{{ dns_name }};
     return 301 https://$host$request_uri;
 }
 
 server {
     listen  80;
-    server_name iam.{{ dns_name }};
+    server_name {{ subdomain_dns_name }}iam.{{ dns_name }};
     return 301 https://$host$request_uri;
 }
 
 server {
     listen  443;
-    server_name login.{{ dns_name }};
+    server_name {{ subdomain_dns_name }}login.{{ dns_name }};
 
     ssl on;
     ssl_certificate {{ tls_crt_dest }};
@@ -43,7 +43,7 @@ server {
 
 server {
     listen  443;
-    server_name iam.{{ dns_name }};
+    server_name {{ subdomain_dns_name }}iam.{{ dns_name }};
 
     ssl on;
     ssl_certificate {{ tls_crt_dest }};

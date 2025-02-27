@@ -5,13 +5,13 @@ upstream camunda {
 
 server {
     listen  80;
-    server_name camunda.{{ dns_name }};
+    server_name {{ subdomain_dns_name }}camunda.{{ dns_name }};
     return 301 https://$host$request_uri;
 }
 
 server {
     listen  443;
-    server_name camunda.{{ dns_name }};
+    server_name {{ subdomain_dns_name }}camunda.{{ dns_name }};
 
     ssl on;
     ssl_certificate {{ tls_crt_dest }};
