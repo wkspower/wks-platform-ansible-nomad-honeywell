@@ -1,14 +1,14 @@
 [master]
-vmbaremaster ansible_host=167.99.9.143
+vmbaremaster ansible_host=0.0.0.0
 
 [app1]
-vmbareapp1 ansible_host=167.99.11.152
+vmbareapp1 ansible_host=0.0.0.0
 
 [app2]
-vmbareapp2 ansible_host=167.99.13.103
+vmbareapp2 ansible_host=0.0.0.0
 
 [lb]
-vmbarelb ansible_host=167.99.7.151
+vmbarelb ansible_host=0.0.0.0
 
 [apps:children]
 app1
