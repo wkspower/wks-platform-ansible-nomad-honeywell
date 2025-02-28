@@ -1,3 +1,4 @@
+[master]
 vmbaremaster ansible_host=167.99.9.143
 
 [app1]

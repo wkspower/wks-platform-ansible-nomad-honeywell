@@ -85,3 +85,9 @@
     path: /etc/nginx/sites-enabled/default
     state: absent
   notify: restart nginx
+
+- name: Enable network connection to httpd
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes

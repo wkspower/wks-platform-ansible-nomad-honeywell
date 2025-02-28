@@ -1,5 +1,8 @@
 job "traefik" {
+  
   datacenters = ["dc1"]
+  
+  type = "system"
 
   group "apps" {
     count = 1
@@ -18,7 +21,7 @@ job "traefik" {
       }
 
       port "dashboard" {
-        static = 8080
+        static = 8888
         to     = 8080
       }
     }

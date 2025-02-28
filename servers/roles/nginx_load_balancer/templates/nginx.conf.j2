@@ -46,6 +46,7 @@ http {
 
     upstream wkspower_api_gateway {
         server {{ hostvars['vmbareapp1'].ansible_host }};
+        server {{ hostvars['vmbareapp2'].ansible_host }};
     }
 
     include /etc/nginx/conf.d/*.conf;
