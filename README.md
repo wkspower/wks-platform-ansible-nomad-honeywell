@@ -139,13 +139,7 @@ Ensure the `dns_name` variable reflects your domain name instead of `wkspower.de
 Deploy essential services required for the cluster operation. These include databases, authentication, and networking components. Run the following Ansible playbooks in order:
 
 ```
-ansible-playbook -i inventory/hosts playbooks/01_deploy_open_policy.yml
-ansible-playbook -i inventory/hosts playbooks/02_deploy_postgres.yml
-ansible-playbook -i inventory/hosts playbooks/03_deploy_mongodb.yml
-ansible-playbook -i inventory/hosts playbooks/04_deploy_minio.yml
-ansible-playbook -i inventory/hosts playbooks/05_deploy_camunda7.yml
-ansible-playbook -i inventory/hosts playbooks/06_deploy_keycloak.yml
-ansible-playbook -i inventory/hosts playbooks/07_deploy_traefik.yml
+ansible-playbook -i inventory/hosts deploy_servers.yml
 ```
 
 ----------
@@ -157,6 +151,28 @@ Deploy the final set of applications within the cluster. This step ensures that 
 ```
 ansible-playbook -i inventory/hosts deploy_apps.yml
 ```
+
+----------
+
+## Step 8: Verify Cluster Status with Nomad Dashboard
+
+To check the status of the deployed cluster, access the Nomad dashboard:
+
+1.  Copy the IPv4 address of `vmbaremaster` and replace it in the following command:
+
+```
+ssh -i ~/.ssh/id_rsa_deployer -L 4646:10.10.67.01:4646 deployer@10.10.67.01
+```
+
+2.  Open a web browser and navigate to:    
+
+```
+http://localhost:4646
+```
+
+This will display the Nomad dashboard, where you can monitor jobs, allocations, and cluster health. Below is an example screenshot of the dashboard:
+
+![image](https://github.com/user-attachments/assets/95018b87-5d44-4685-b966-c252538c7dd5)
 
 ----------
 
