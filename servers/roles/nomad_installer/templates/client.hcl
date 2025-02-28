@@ -31,6 +31,16 @@ client {
     read_only = false
   }  
 
+  host_volume "camundadata" {
+    path      = "/mnt/data_storage/camunda"
+    read_only = false
+  }  
+
+  host_volume "keycloakdata" {
+    path      = "/mnt/data_storage/keycloak"
+    read_only = false
+  }  
+
   meta {
     role = "{{ nomad_meta_role }}"
   }

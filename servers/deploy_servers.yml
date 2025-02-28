@@ -25,9 +25,9 @@
       constraint: "app1"
 
     - role: nomad_jobs_keycloak
-      constraint: "app1"
+      constraint: "app2"
       keycloak_user: "admin"
       keycloak_password: "admin"
-      tls_cert_dir: "/mnt/data_storage"
+      tls_cert_dir: "/mnt/data_storage/keycloak"
 
     - role: nomad_jobs_traefik      

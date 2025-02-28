@@ -1,4 +1,10 @@
 ---
+- name: copy reaml to job to host
+  template:
+    src: initial-realm.json.j2
+    dest: /mnt/data_storage/keycloak/initial-realm.json
+    mode: "0644"
+
 - name: copy keycloak spec job to host
   template:
     src: keycloak.nomad.hcl

@@ -29,7 +29,14 @@ job "keycloak" {
       config {
         image = "quay.io/keycloak/keycloak:20.0.3"
         ports = ["http", "https"]
-        args  = ["start", "-b", "--http-host=0.0.0.0", "--http-port=8080", "--https-port=8443"]
+        args  = [
+          "start", 
+          "-b", 
+          "--http-host=0.0.0.0", 
+          "--http-port=8080", 
+          "--https-port=8443", 
+          "--import-realm"
+        ]
       }
 
       env {
@@ -51,12 +58,17 @@ job "keycloak" {
 
       resources {
         cpu    = 500
-        memory = 2024
+        memory = 1024
       }
 
       volume_mount {
         volume      = "kc_storage"
         destination = "/certs"
+      }
+
+      volume_mount {
+        volume      = "kc_storage"
+        destination = "/opt/keycloak/data/import"
       }
 
       service {
@@ -68,7 +80,7 @@ job "keycloak" {
     volume "kc_storage" {
       type      = "host"
       read_only = true
-      source    = "data_storage"
+      source    = "keycloakdata"
     } 
   }
 }
