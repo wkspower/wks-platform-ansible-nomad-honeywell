@@ -10,6 +10,8 @@ job "minio" {
     count  = 1
 
     network {
+      mode = "bridge"
+      
       port "minio" {
         static = 9000
         to     = 9000

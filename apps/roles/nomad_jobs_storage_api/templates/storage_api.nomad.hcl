@@ -2,9 +2,12 @@ job "storage_api" {
   datacenters = ["dc1"]
 
   group "apps" {
+    count = 1
+
     network {
       port "http" {
-        static = 8085
+        static = 7003
+        to     = 8085
       }
     }
 

@@ -2,9 +2,12 @@ job "case_portal" {
   datacenters = ["dc1"]
 
   group "apps" {
+    count = 1
+
     network {
       port "http" {
-        static = 80
+        static = 7001
+        to     = 80
       }
     }
 
@@ -22,9 +25,9 @@ job "case_portal" {
       }
 
       env {
-        __SERVER_KEYCLOAK_URL__="https://login.{{ dns_name }}"
-        __SERVER_API_URL__="https://api.{{ dns_name }}"
-        __SERVER_STORAGE_URL__="https://stg.{{ dns_name }}"
+        __SERVER_KEYCLOAK_URL__="https://{{ subdomain_dns_name }}login.{{ dns_name }}"
+        __SERVER_API_URL__="https://{{ subdomain_dns_name }}api.{{ dns_name }}"
+        __SERVER_STORAGE_URL__="https://{{ subdomain_dns_name }}stg.{{ dns_name }}"
         __SERVER_WEBSOCKETS_ENABLED__="false"
         __SERVER_WEBSOCKETS_URL__=""
         __SERVER_WEBSOCKETS_CASE_CREATED__=""
@@ -40,9 +43,7 @@ job "case_portal" {
 
         tags = [
           "traefik.enable=true",
-          "traefik.http.middlewares.caseportal-delpath.stripPrefix.Prefixes=/app",
-          "traefik.http.routers.caseportal.rule=PathPrefix(`/app`)",
-          "traefik.http.routers.caseportal.middlewares=caseportal-delpath",
+          "traefik.http.routers.caseportal.rule=Host(`app.wkspower.dev`)",
           "traefik.http.routers.caseportal.entrypoints=web"
         ]
       }

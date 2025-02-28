@@ -2,9 +2,12 @@ job "case_engine_api" {
   datacenters = ["dc1"]
 
   group "apps" {
+    count = 1
+
     network {
       port "http" {
-        static = 8081
+        static = 7002
+        to     = 8081
       }
     }
 
@@ -26,7 +29,7 @@ job "case_engine_api" {
         CAMUNDA_BASE_URL="http://camunda7.service.consul:8080/engine-rest"
         MONGO_CONN="mongodb://mongodb.service.consul"
         MONGO_DATABASE="wks"
-        KEYCLOAK_URL="http://keycloak.service.consul:8080"
+        KEYCLOAK_URL="http://keycloak.service.consul:8081"
         OPA_URL="http://opa.service.consul:8181/v1/data/wks/authz/allow"
       }      
 
@@ -40,7 +43,7 @@ job "case_engine_api" {
           "traefik.http.middlewares.delpath.stripPrefix.prefixes=/engine,/inbound,/s3",
           "traefik.http.routers.caseengineapi.rule=PathPrefix(`/engine`) || PathPrefix(`/inbound`) || PathPrefix(`/s3`)",
           "traefik.http.routers.caseengineapi.entrypoints=web",
-          "traefik.http.routers.caseengineapi.middlewares=delpath"          
+          "traefik.http.routers.caseengineapi.middlewares=delpath"     
         ]
       }
     }

@@ -79,18 +79,12 @@ open http://localhost:4646
 ## step 8 - deploy all servers on the cluster
 
 ```bash
-ansible-playbook -i inventory/hosts playbooks/01_deploy_open_policy.yml
-ansible-playbook -i inventory/hosts playbooks/02_deploy_postgres.yml
-ansible-playbook -i inventory/hosts playbooks/03_deploy_mongodb.yml
-ansible-playbook -i inventory/hosts playbooks/04_deploy_minio.yml
-ansible-playbook -i inventory/hosts playbooks/05_deploy_camunda7.yml
-ansible-playbook -i inventory/hosts playbooks/06_deploy_keycloak.yml
-ansible-playbook -i inventory/hosts playbooks/07_deploy_traefik.yml
+ansible-playbook -i inventory/hosts deploy_servers.yml
 ```
 
 ## step 9 - deploy all apps on the cluster
 
 ```bash
-ansible-playbook -i inventory/hosts playbooks/publish_docker_images_remote_host.yml
+cd ../apps
 ansible-playbook -i inventory/hosts deploy_apps.yml
 ```

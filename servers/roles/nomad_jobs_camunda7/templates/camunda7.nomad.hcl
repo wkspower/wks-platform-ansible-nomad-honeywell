@@ -10,8 +10,10 @@ job "camunda7" {
     count = 1
 
     network {
+      mode = "bridge"
+      
       port "http" {
-        static = 7000
+        static = 8080
         to     = 8080 
       }
     }

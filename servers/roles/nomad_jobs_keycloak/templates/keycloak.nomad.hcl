@@ -10,8 +10,10 @@ job "keycloak" {
     count = 1
     
     network {
+      mode = "bridge"
+      
       port "http" {
-        static = 8080
+        static = 8081
         to     = 8080 
       }
 

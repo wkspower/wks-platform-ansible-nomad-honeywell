@@ -1,13 +1,18 @@
 job "traefik" {
+  
   datacenters = ["dc1"]
+  
+  type = "system"
 
   group "apps" {
     count = 1
 
     network {
+      mode = "bridge"
+      
       port "http" {
         static = 80
-        to     = 90
+        to     = 80
       }
 
       port "https" {
@@ -16,7 +21,7 @@ job "traefik" {
       }
 
       port "dashboard" {
-        static = 8080
+        static = 8888
         to     = 8080
       }
     }
